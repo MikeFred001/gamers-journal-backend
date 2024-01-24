@@ -8,10 +8,10 @@
 // const routeFile = require("./routeFile");
 
 const express = require("express");
-const morgan = require("morgan");
+// const morgan = require("morgan");
 
 const { NotFoundError } = require("./expressError");
-const { authenticateJWT } = require("./middleware/auth");\
+// const { authenticateJWT } = require("./middleware/auth");
 
 const app = express();
 
