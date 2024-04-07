@@ -1,6 +1,5 @@
 CREATE TABLE users (
-    username VARCHAR(25) PRIMARY KEY,
-
+    username VARCHAR(25) PRIMARY KEY, --PK
     password TEXT NOT NULL,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
@@ -9,16 +8,12 @@ CREATE TABLE users (
 );
 
 CREATE TABLE games (
-    id SERIAL PRIMARY KEY,
-
-    username VARCHAR(25) REFERENCES users ON DELETE CASCADE,
-
+    id SERIAL PRIMARY KEY, --PK
+    username VARCHAR(25) REFERENCES users ON DELETE CASCADE, --FK
     title TEXT NOT NULL,
-    edition TEXT DEFAULT 'Standard',
-    retail_price NUMERIC(5, 2) CHECK (retail_price > 0),
-    release_date DATE, --yyyy-mm-dd
-    preferred_system VARCHAR(20),
+    release_date VARCHAR(10) CHECK (LENGTH(release_date) = 10), --MM-DD-YYYY
+    preferred_system VARCHAR(30),
     store_link TEXT,
-    date_added TIMESTAMP WITH TIME ZONE NOT NULL,
+    date_added TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     note TEXT
 );

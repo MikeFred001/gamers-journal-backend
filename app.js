@@ -13,13 +13,18 @@ const express = require("express");
 const { NotFoundError } = require("./expressError");
 // const { authenticateJWT } = require("./middleware/auth");
 
+const gameRoutes = require("./routes/games");
+
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded());
+
+app.use("/games", gameRoutes);
+
+
 // app.use(authenticateJWT);
 // app.use(morgan('dev'));
-app.use('/baseEndpoint', routeImportVarName /* routeFile in this case */);
 
 // ... ROUTES ...
 
