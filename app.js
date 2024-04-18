@@ -5,8 +5,6 @@
 // const jsonschema = require("jsonschema");
 // const schemaName = require("../schemas/schemaName.json");
 
-// const routeFile = require("./routeFile");
-
 const express = require("express");
 // const morgan = require("morgan");
 
@@ -14,13 +12,17 @@ const { NotFoundError } = require("./expressError");
 // const { authenticateJWT } = require("./middleware/auth");
 
 const gameRoutes = require("./routes/games");
+const apiRoutes = require("./routes/api");
 
+const cors = require("cors");
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded());
 
 app.use("/games", gameRoutes);
+app.use("/api", cors(), apiRoutes);
+// app.use(cors());
 
 
 // app.use(authenticateJWT);
