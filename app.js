@@ -22,8 +22,6 @@ app.use(express.urlencoded());
 
 app.use("/games", gameRoutes);
 app.use("/api", cors(), apiRoutes);
-// app.use(cors());
-
 
 // app.use(authenticateJWT);
 // app.use(morgan('dev'));
