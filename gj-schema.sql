@@ -1,3 +1,5 @@
+\connect gamers_journal
+
 CREATE TABLE users (
     username VARCHAR(25) PRIMARY KEY, --PK
     password TEXT NOT NULL,

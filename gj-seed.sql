@@ -1,3 +1,5 @@
+\connect gamers_journal
+
 DELETE FROM games;
 DELETE FROM users;
 
@@ -22,8 +24,6 @@ VALUES ('testuser',
 
 INSERT INTO games (username,
                    title,
-                   edition,
-                   retail_price,
                    release_date,
                    preferred_system,
                    store_link,
@@ -32,8 +32,6 @@ INSERT INTO games (username,
 VALUES (
     'testuser',
     'testtitle',
-    'testedition',
-    69.99,
     '2000-01-01',
     'PlayStation 4',
     'https://www.steam.com',
@@ -43,8 +41,6 @@ VALUES (
 (
     'testadmin',
     'testtitle2',
-    'testedition2',
-    59.99,
     '2000-01-02',
     'PlayStation 5',
     'https://www.steam2.com',

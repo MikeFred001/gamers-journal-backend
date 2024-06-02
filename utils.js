@@ -22,12 +22,12 @@ function filterApiResults(results) {
     const name = result.name;
     const description = result.deck;
     const releaseDate = result.original_release_date
-      ? result.original_release_date
-      : null;
+        ? result.original_release_date
+        : null;
     const platforms = result.platforms?.map(platformData => platformData.name) || [];
     const image = "image" in result
-      ? result.image.original_url
-      : PLACEHOLDER_IMAGE;
+        ? result.image.original_url
+        : PLACEHOLDER_IMAGE;
 
     filteredResults.push({ id, description, image, name, platforms, releaseDate });
     id++;
