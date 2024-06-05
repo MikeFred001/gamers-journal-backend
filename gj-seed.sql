@@ -24,26 +24,26 @@ VALUES ('testuser',
 
 INSERT INTO games (username,
                    title,
+                   description,
                    release_date,
                    preferred_system,
-                   store_link,
                    date_added,
                    note)
 VALUES (
     'testuser',
     'testtitle',
+    'test description',
     '2000-01-01',
     'PlayStation 4',
-    'https://www.steam.com',
     CURRENT_TIMESTAMP,
     'Hey look, a note.'
 ),
 (
     'testadmin',
     'testtitle2',
+    'test description 2',
     '2000-01-02',
     'PlayStation 5',
-    'https://www.steam2.com',
     CURRENT_TIMESTAMP,
     'Hey look, a note. Again.'
 );

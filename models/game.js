@@ -5,64 +5,83 @@ const { BadRequestError, NotFoundError } = require("../expressError");
 
 
 class Game {
-  static async findAll() {
-    const gamesRes = await db.query(`
-      SELECT title,
-             edition,
-             retail_price,
-             release_date,
-             preferred_system,
-             store_link,
-             date_added,
-             note
-      FROM games
-      ORDER BY date_added
-    `);
+    static async findAll(username) {
+        const usernameCheck = await db.query(`
+            SELECT username
+            FROM users
+            WHERE username = $1;`,[username]);
 
-    const games = gamesRes.rows;
+        if (!usernameCheck.rows[0]) {
+            throw new BadRequestError(`No such user: ${username}`);
+        }
 
-    return games;
-  }
+        const gamesRes = await db.query(`
+            SELECT title,
+                   description,
+                   release_date,
+                   preferred_system,
+                   date_added,
+                   note
+            FROM games
+            WHERE username = $1
+            ORDER BY date_added;`, [username]
+        );
+
+        const games = gamesRes.rows;
+        return games;
+    }
 
 
+    static async create(data) {
+        const duplicateCheck = await db.query(`
+            SELECT id
+            FROM games
+            WHERE title = $1;`, [data.title]);
+
+        if (duplicateCheck.rows[0]) {
+            throw new BadRequestError(`Duplicate username: ${data.username}`);
+        }
+
+        const result = await db.query(`
+            INSERT INTO games (username,
+                               title,
+                               description,
+                               release_date,
+                               preferred_system,
+                               date_added,
+                               note)
+            VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, $6)
+            RETURNING username,
+                      title,
+                      release_date,
+                      preferred_system,
+                      date_added,
+                      note;`,
+            [data.username,
+             data.title,
+             data.description,
+             data.releaseDate,
+             data.preferredSystem,
+             data.note]
+        );
+
+        const game = result.rows[0];
+        return game;
+    }
 
 
-  static async create({ title,
-                        edition,
-                        retail_price,
-                        release_date,
-                        preferred_system,
-                        store_link,
-                        note }) {
-      const result = await db.query(`
-        INSERT INTO games (title,
-                           edition,
-                           retail_price,
-                           release_date,
-                           preferred_system,
-                           store_link,
-                           date_added,
-                           note)
-        VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, $7)
-        RETURNING title,
-                  edition,
-                  retail_price,
-                  release_date,
-                  preferred_system,
-                  store_link,
-                  note`, [
-        title,
-        edition,
-        retail_price,
-        release_date,
-        preferred_system,
-        store_link,
-        note
-    ]);
+    static async remove(id) {
+        const result = await db.query(`
+            DELETE
+            FROM games
+            WHERE title = $1
+            RETURNING title;`, [id]
+        );
 
-    return result.rows[0];
-  }
-
+        const game = result.rows[0];
+        if (!game) throw new NotFoundError(`No game under ID: ${id}`);
+        return game;
+    }
 }
 
 module.exports = Game;
@@ -81,11 +100,8 @@ module.exports = Game;
 //   id SERIAL PRIMARY KEY,
 //   username VARCHAR(25) REFERENCES users ON DELETE CASCADE,
 //   title TEXT NOT NULL,
-//   edition TEXT DEFAULT 'Standard',
-//   retail_price NUMERIC(5, 2) CHECK (retail_price > 0),
 //   release_date DATE, --yyyy-mm-dd
 //   preferred_system VARCHAR(20),
-//   store_link TEXT,
 //   date_added TIMESTAMP WITH TIME ZONE NOT NULL,
 //   note TEXT
 // );
