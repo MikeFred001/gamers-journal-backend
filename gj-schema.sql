@@ -29,6 +29,7 @@ CREATE TABLE games (
     username VARCHAR(25) NOT NULL REFERENCES users ON DELETE CASCADE, --FK
     title TEXT NOT NULL,
     description TEXT NOT NULL,
+    image_url TEXT CHECK (position('http' IN image_url) = 1),
     release_date VARCHAR(10) CHECK (LENGTH(release_date) = 10), --MM-DD-YYYY
     preferred_system VARCHAR(30),
     date_added TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

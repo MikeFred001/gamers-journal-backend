@@ -5,26 +5,37 @@
 // const jsonschema = require("jsonschema");
 // const schemaName = require("../schemas/schemaName.json");
 
+
+
 const express = require("express");
-// const morgan = require("morgan");
+const morgan = require("morgan");
+const cors = require("cors");
 
 const { NotFoundError } = require("./expressError");
-// const { authenticateJWT } = require("./middleware/auth");
+const { authenticateJWT } = require("./middleware/auth");
 
 const gameRoutes = require("./routes/games");
 const apiRoutes = require("./routes/api");
+const usersRoutes = require("./routes/users");
 
-const cors = require("cors");
 const app = express();
 
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  methods: 'POST, GET',
+  allowedHeaders: 'Content-Type',
+  optionsSuccessStatus: 204
+};
+
 app.use(express.json());
+app.use(morgan("tiny"));
+app.use(authenticateJWT);
+app.use(cors(corsOptions));
 app.use(express.urlencoded());
 
+app.use("/users", usersRoutes);
 app.use("/games", gameRoutes);
 app.use("/api", cors(), apiRoutes);
-
-// app.use(authenticateJWT);
-// app.use(morgan('dev'));
 
 // ... ROUTES ...
 

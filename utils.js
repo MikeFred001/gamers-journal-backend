@@ -36,4 +36,45 @@ function filterApiResults(results) {
   return filteredResults;
 }
 
-module.exports = { filterApiResults };
+
+//--CREATE JSON WEB TOKEN-----------------------------------------------------//
+
+
+const jwt = require("jsonwebtoken");
+const { SECRET_KEY } = require("./config");
+
+
+/** Return signed JWT from user data. */
+function createToken(user) {
+  console.assert(user.isAdmin !== undefined,
+      "createToken passed user without isAdmin property");
+
+  let payload = {
+    username: user.username,
+    isAdmin: user.isAdmin || false,
+  };
+
+  return jwt.sign(payload, SECRET_KEY);
+}
+
+//--SQLFORPARTIALUPDATE-------------------------------------------------------//
+
+
+// TODO: I don't care if my instructors wrote this, I hate it and I'm going to
+// implement a better solution at some point.
+function sqlForPartialUpdate(dataToUpdate, jsToSql) {
+  const keys = Object.keys(dataToUpdate);
+  if (keys.length === 0) throw new BadRequestError("No data");
+
+  // {firstName: 'Aliya', age: 32} => ['"first_name"=$1', '"age"=$2']
+  const columns = keys.map((colName, idx) =>
+      `"${jsToSql[colName] || colName}"=$${idx + 1}`,
+  );
+
+  return {
+    setCols: columns.join(", "),
+    values: Object.values(dataToUpdate),
+  };
+}
+
+module.exports = { filterApiResults, createToken, sqlForPartialUpdate };
