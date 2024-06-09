@@ -2,18 +2,16 @@
 
 /** Routes for users. */
 
-// TODO: integrate jsonschemas
-// const jsonschema = require("jsonschema");
 
 const express = require("express");
-const User = require("../models/user");
+const User = require("../models/User");
 const { ensureCorrectUserOrAdmin, ensureAdmin } = require("../middleware/auth");
-const { BadRequestError } = require("../expressError");
 const { createToken } = require("../utils");
+const { BadRequestError } = require("../expressError");
 
-// TODO: integrate jsonschemas and uncomment these imports
-// const userNewSchema = require("../schemas/userNew.json");
-// const userUpdateSchema = require("../schemas/userUpdate.json");
+const jsonschema = require("jsonschema");
+const userNewSchema = require("../schemas/userNew.json");
+const userUpdateSchema = require("../schemas/userUpdate.json");
 
 const router = express.Router();
 
@@ -31,20 +29,20 @@ const router = express.Router();
  **/
 
 router.post("/", ensureAdmin, async function (req, res, next) {
-  // TODO: add validation
-  // const validator = jsonschema.validate(
-  //     req.body,
-  //     userNewSchema,
-  //     { required: true },
-  // );
-  if (!validator.valid) {
-    const errs = validator.errors.map(e => e.stack);
-    throw new BadRequestError(errs);
-  }
+    const validator = jsonschema.validate(
+        req.body,
+        userNewSchema,
+        { required: true },
+    );
 
-  const user = await User.register(req.body);
-  const token = createToken(user);
-  return res.status(201).json({ user, token });
+    if (!validator.valid) {
+        const errs = validator.errors.map(e => e.stack);
+        throw new BadRequestError(errs);
+    }
+
+    const user = await User.register(req.body);
+    const token = createToken(user);
+    return res.status(201).json({ user, token });
 });
 
 
@@ -56,8 +54,8 @@ router.post("/", ensureAdmin, async function (req, res, next) {
  **/
 
 router.get("/", ensureAdmin, async function (req, res, next) {
-  const users = await User.findAll();
-  return res.json({ users });
+    const users = await User.findAll();
+    return res.json({ users });
 });
 
 
@@ -70,8 +68,8 @@ router.get("/", ensureAdmin, async function (req, res, next) {
  **/
 
 router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
-  const user = await User.get(req.params.username);
-  return res.json({ user });
+    const user = await User.get(req.params.username);
+    return res.json({ user });
 });
 
 
@@ -86,19 +84,19 @@ router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, nex
  **/
 
 router.patch("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
-  // TODO: add validation
-  // const validator = jsonschema.validate(
-  //     req.body,
-  //     userUpdateSchema,
-  //     { required: true },
-  // );
-  if (!validator.valid) {
-    const errs = validator.errors.map(e => e.stack);
-    throw new BadRequestError(errs);
-  }
+    const validator = jsonschema.validate(
+        req.body,
+        userUpdateSchema,
+        { required: true },
+    );
 
-  const user = await User.update(req.params.username, req.body);
-  return res.json({ user });
+    if (!validator.valid) {
+        const errs = validator.errors.map(e => e.stack);
+        throw new BadRequestError(errs);
+    }
+
+    const user = await User.update(req.params.username, req.body);
+    return res.json({ user });
 });
 
 
@@ -108,8 +106,8 @@ router.patch("/:username", ensureCorrectUserOrAdmin, async function (req, res, n
  **/
 
 router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
-  await User.remove(req.params.username);
-  return res.json({ deleted: req.params.username });
+    await User.remove(req.params.username);
+    return res.json({ deleted: req.params.username });
 });
 
 

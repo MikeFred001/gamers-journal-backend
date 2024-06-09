@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://our.game.com/gameUpdate.schema.json",
+    "type": "object",
+    "properties": {
+        "preferredSystem": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+        },
+        "note": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": false,
+    "required": []
+}

@@ -39,10 +39,12 @@ class Game {
         const duplicateCheck = await db.query(`
             SELECT title
             FROM games
-            WHERE title = $1;`, [data.title]);
+            WHERE title = $1 AND username = $2;`,
+            [data.title, data.username]
+        );
 
         if (duplicateCheck.rows[0]) {
-            throw new BadRequestError(`Duplicate username: ${data.username}`);
+            throw new BadRequestError(`Game already saved: ${data.title}`);
         }
 
         const result = await db.query(`
@@ -58,10 +60,10 @@ class Game {
             RETURNING id,
                       username,
                       title,
+                      description,
                       release_date,
                       preferred_system,
-                      note,
-                      date_added;`,
+                      note;`,
             [data.username,
             data.title,
             data.description,
@@ -75,30 +77,20 @@ class Game {
         return game;
     }
 
-    // TODO: Update method to only touch fields that are passed in.
+    // TODO: Update method to only touch fields that are passed in. Could use
+    // a lot of polishing.
     static async update(data) {
         const result = await db.query(`
             UPDATE games
-            SET title = $1,
-                description = $2,
-                image_url = $3,
-                release_date = $4,
-                preferred_system = $5,
-                note = $6
-            WHERE id = $7
+            SET preferred_system = $1,
+                note = $2
+            WHERE id = $3
             RETURNING id,
                       title,
-                      description,
-                      image_url,
                       release_date,
                       preferred_system,
-                      note,
-                      date_added;`,
-            [data.title,
-            data.description,
-            data.imageUrl,
-            data.releaseDate,
-            data.preferredSystem,
+                      note;`,
+            [data.preferredSystem,
             data.note,
             data.id]
         );
@@ -119,7 +111,7 @@ class Game {
 
         const game = result.rows[0];
         if (!game) throw new NotFoundError(`No game under ID: ${id}`);
-        return game;
+        return { game, deleted: true };
     }
 }
 

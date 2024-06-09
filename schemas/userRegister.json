@@ -1,0 +1,41 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/userRegister.schema.json",
+    "type": "object",
+    "properties": {
+        "username": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+        },
+        "password": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 30
+        },
+        "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+        },
+        "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+        },
+        "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 6,
+            "maxLength": 60
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "username",
+        "firstName",
+        "lastName",
+        "password",
+        "email"
+    ]
+}

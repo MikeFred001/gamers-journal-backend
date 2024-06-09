@@ -1,0 +1,38 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://our.game.com/gameNew.schema.json",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+        },
+        "imageUrl": {
+            "type": "string",
+            "format": "uri"
+        },
+        "description": {
+            "type": "string"
+        },
+        "releaseDate": {
+            "type": "string",
+            "minLength": 10
+        },
+        "preferredSystem": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+        },
+        "note": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "title",
+        "imageUrl",
+        "releaseDate",
+        "preferredSystem"
+    ]
+}

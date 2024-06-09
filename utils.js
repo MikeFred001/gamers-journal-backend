@@ -40,7 +40,7 @@ function filterApiResults(results) {
 //--CREATE JSON WEB TOKEN-----------------------------------------------------//
 
 
-const jwt = require("jsonwebtoken");
+const JWT = require("jsonwebtoken");
 const { SECRET_KEY } = require("./config");
 
 
@@ -54,7 +54,7 @@ function createToken(user) {
     isAdmin: user.isAdmin || false,
   };
 
-  return jwt.sign(payload, SECRET_KEY);
+  return JWT.sign(payload, SECRET_KEY);
 }
 
 //--SQLFORPARTIALUPDATE-------------------------------------------------------//
