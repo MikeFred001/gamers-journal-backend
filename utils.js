@@ -7,29 +7,29 @@ const { PLACEHOLDER_IMAGE } = require("./constants.js");
  * input: [
  *  { deck,
  *    image: { icon_url, ... },
- *    platforms: { platform, ... },
+ *    platforms: [ { name, ... }, ... ],
  *    release_date,
  *    name }
  * ]
  *
- * output: [ { id, description, image, name, platforms, releaseDate } ]
+ * output: [ { id, description, image, name, platforms, releaseDate }, ... ]
  */
 function filterApiResults(results) {
   const filteredResults = [];
   let id = 0;
 
   for (let result of results) {
-    const name = result.name;
+    const title = result.name;
     const description = result.deck;
     const releaseDate = result.original_release_date
-        ? result.original_release_date
-        : null;
+      ? result.original_release_date
+      : null;
     const platforms = result.platforms?.map(platformData => platformData.name) || [];
-    const image = "image" in result
-        ? result.image.original_url
-        : PLACEHOLDER_IMAGE;
+    const imageUrl = "image" in result
+      ? result.image.original_url
+      : PLACEHOLDER_IMAGE;
 
-    filteredResults.push({ id, description, image, name, platforms, releaseDate });
+    filteredResults.push({ id, description, imageUrl, title, platforms, releaseDate });
     id++;
   }
 
@@ -39,7 +39,6 @@ function filterApiResults(results) {
 
 //--CREATE JSON WEB TOKEN-----------------------------------------------------//
 
-
 const JWT = require("jsonwebtoken");
 const { SECRET_KEY } = require("./config");
 
@@ -47,7 +46,7 @@ const { SECRET_KEY } = require("./config");
 /** Return signed JWT from user data. */
 function createToken(user) {
   console.assert(user.isAdmin !== undefined,
-      "createToken passed user without isAdmin property");
+    "createToken passed user without isAdmin property");
 
   let payload = {
     username: user.username,
@@ -57,8 +56,8 @@ function createToken(user) {
   return JWT.sign(payload, SECRET_KEY);
 }
 
-//--SQLFORPARTIALUPDATE-------------------------------------------------------//
 
+//--SQL FOR PARTIAL UPDATE----------------------------------------------------//
 
 // TODO: I don't care if my instructors wrote this, I hate it and I'm going to
 // implement a better solution at some point.
@@ -68,7 +67,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 
   // {firstName: 'Aliya', age: 32} => ['"first_name"=$1', '"age"=$2']
   const columns = keys.map((colName, idx) =>
-      `"${jsToSql[colName] || colName}"=$${idx + 1}`,
+    `"${jsToSql[colName] || colName}"=$${idx + 1}`,
   );
 
   return {
@@ -77,4 +76,47 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-module.exports = { filterApiResults, createToken, sqlForPartialUpdate };
+
+//--NORMALIZE FORM DATA-------------------------------------------------------//
+
+// TODO: This function is currently used for user registration only, may need to
+// update it to handle multiple forms. If not, make function name more specific.
+
+// Normalizes form data, trimming whitespace and handling capitalization.
+function normalizeFormData(data) {
+  const username = data.username.trim().toLowerCase();
+  const password = data.password.trim();
+  const firstName = capitalize(data.firstName);
+  const lastName = capitalize(data.lastName);
+  const email = data.email.trim().toLowerCase();
+
+  return { username, password, firstName, lastName, email };
+}
+
+
+//--CAPITALIZE----------------------------------------------------------------//
+
+// Capitalizes the first letter of a string while lower-casing the rest of the
+// string. Ignores leading white space.
+
+// "  heLLo" >>> "  Hello"
+function capitalize(str) {
+  const alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+  const trimmed = str.trim();
+  if ( !alphabet.includes(trimmed[0].toLowerCase()) ) {
+    throw new Error("capitalize() function error: First character is not a letter.");
+  }
+
+  return trimmed[0].toUpperCase() + trimmed.slice(1).toLowerCase();
+}
+
+
+
+module.exports = {
+  filterApiResults,
+  createToken,
+  sqlForPartialUpdate,
+  normalizeFormData,
+  capitalize
+};

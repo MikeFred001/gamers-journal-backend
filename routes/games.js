@@ -1,6 +1,6 @@
 const express = require("express");
 
-const Game = require("../models/game");
+const Game = require("../models/Game");
 const { BadRequestError } = require("../expressError");
 const { ensureCorrectUserOrAdmin, ensureLoggedIn } = require("../middleware/auth");
 

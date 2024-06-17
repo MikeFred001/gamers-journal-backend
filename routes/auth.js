@@ -6,12 +6,13 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const { createToken } = require("../utils");
+const { createToken, normalizeFormData } = require("../utils");
 const { BadRequestError } = require("../expressError");
 
 const jsonschema = require("jsonschema");
 const userLoginSchema = require("../schemas/userLogin.json");
 const userRegisterSchema = require("../schemas/userRegister.json");
+
 
 //--ROUTERS-------------------------------------------------------------------//
 
@@ -49,6 +50,8 @@ router.post("/login", async function (req, res, next) {
 //
 //  Authorization required: none
 router.post("/register", async function (req, res, next) {
+  console.log(req.body);
+
     const validator = jsonschema.validate(
         req.body,
         userRegisterSchema,
@@ -60,10 +63,11 @@ router.post("/register", async function (req, res, next) {
         throw new BadRequestError(errs);
     }
 
-    const newUser = await User.register({ ...req.body, isAdmin: false });
+    const normalizedData = normalizeFormData(req.body);
+    const newUser = await User.register({ ...normalizedData, isAdmin: false });
     const token = createToken(newUser);
+
     return res.status(201).json({ token });
 });
-
 
 module.exports = router;

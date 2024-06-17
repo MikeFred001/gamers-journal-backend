@@ -82,17 +82,14 @@ class Game {
     static async update(data) {
         const result = await db.query(`
             UPDATE games
-            SET preferred_system = $1,
-                note = $2
+            SET preferred_system = $1, note = $2
             WHERE id = $3
             RETURNING id,
                       title,
                       release_date,
                       preferred_system,
                       note;`,
-            [data.preferredSystem,
-            data.note,
-            data.id]
+            [data.preferredSystem, data.note, data.id]
         );
 
         const game = result.rows[0];
