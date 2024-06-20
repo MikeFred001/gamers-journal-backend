@@ -112,11 +112,37 @@ function capitalize(str) {
 }
 
 
+//--CONVERT KEYS TO CAMEL CASE------------------------------------------------//
+
+function toCamelCase(snakeStr) {
+  return snakeStr.replace(/(_\w)/g, match => match[1].toUpperCase());
+}
+
+function convertKeysToCamelCase(obj) {
+  const camelObj = {};
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const camelKey = toCamelCase(key);
+
+      camelObj[camelKey] = obj[key];
+
+      if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+        const nestedObj = convertKeysToCamelCase(obj[key]);
+        camelObj[camelKey] = nestedObj;
+      }
+    }
+  }
+  return camelObj;
+}
+
+
 
 module.exports = {
   filterApiResults,
   createToken,
   sqlForPartialUpdate,
   normalizeFormData,
-  capitalize
+  capitalize,
+  convertKeysToCamelCase,
+  toCamelCase
 };

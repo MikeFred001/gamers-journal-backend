@@ -35,6 +35,10 @@ router.post("/:username", ensureCorrectUserOrAdmin, async function (req, res, ne
     return res.json({ game });
 });
 
+router.patch("/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
+    const game = await Game.update({id: req.params.id, ...req.body });
+    return res.json({ game });
+});
 
 // Accepts game id from URL.
 // Returns undefined.
