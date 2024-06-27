@@ -1,21 +1,17 @@
-"use strict";
-// const jwt = require("jsonwebtoken");
-// const bcrypt = require("bcrypt");
+'use strict';
 
-// const jsonschema = require("jsonschema");
-// const schemaName = require("../schemas/schemaName.json");
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
 
-const express = require("express");
-const morgan = require("morgan");
-const cors = require("cors");
+const { NotFoundError } = require('./expressError');
+const { authenticateJWT } = require('./middleware/auth');
 
-const { NotFoundError } = require("./expressError");
-const { authenticateJWT } = require("./middleware/auth");
-
-const gameRoutes = require("./routes/games");
-const apiRoutes = require("./routes/api");
-const usersRoutes = require("./routes/users");
-const authRoutes = require("./routes/auth");
+const gameRoutes = require('./routes/games');
+const apiRoutes = require('./routes/api');
+const usersRoutes = require('./routes/users');
+const authRoutes = require('./routes/auth');
+const homeRoutes = require('./routes/home');
 
 const app = express();
 
@@ -28,21 +24,22 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(morgan("tiny"));
+app.use(morgan('tiny'));
 app.use(authenticateJWT);
 app.use(express.urlencoded());
 
-app.use("/users", usersRoutes);
-app.use("/games", gameRoutes);
-app.use("/api", apiRoutes);
-app.use("/auth", authRoutes);
+app.use('/', homeRoutes);
+app.use('/users', usersRoutes);
+app.use('/games', gameRoutes);
+app.use('/auth', authRoutes);
+app.use('/api', apiRoutes);
 
 app.use(function (req, res) { throw new NotFoundError(); });
 
 app.use(function (err, req, res, next) {
   const status = err.status || 500;
   const message = err.message;
-  if (process.env.NODE_ENV !== "test") console.error(status, err.stack);
+  if (process.env.NODE_ENV !== 'test') console.error(status, err.stack);
   return res.status(status).json({ error: { message, status } });
 });
 

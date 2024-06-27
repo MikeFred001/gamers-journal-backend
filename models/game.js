@@ -18,13 +18,13 @@ class Game {
 
     const gamesRes = await db.query(`
       SELECT id,
-              title,
-              description,
-              image_url AS "imageUrl",
-              release_date AS "releaseDate",
-              preferred_system AS "preferredSystem",
-              date_added "dateAdded",
-              note
+             title,
+             description,
+             image_url AS "imageUrl",
+             release_date AS "releaseDate",
+             preferred_system AS "preferredSystem",
+             date_added "dateAdded",
+             note
       FROM games
       WHERE username = $1
       ORDER BY date_added;`, [username]

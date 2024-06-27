@@ -39,6 +39,7 @@ router.get('/games', cors({
             console.error('Error fetching games:', error);
             res.status(500).json({ error: `Internal server error, ${response.data.error}` });
         }
-    });
+    }
+);
 
 module.exports = router;

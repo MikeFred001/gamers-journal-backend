@@ -84,11 +84,11 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 
 // Normalizes form data, trimming whitespace and handling capitalization.
 function normalizeFormData(data) {
-  const username = data.username.trim().toLowerCase();
-  const password = data.password.trim();
+  const username  = data.username.trim().toLowerCase();
+  const password  = data.password.trim();
   const firstName = capitalize(data.firstName);
-  const lastName = capitalize(data.lastName);
-  const email = data.email.trim().toLowerCase();
+  const lastName  = capitalize(data.lastName);
+  const email     = data.email.trim().toLowerCase();
 
   return { username, password, firstName, lastName, email };
 }
@@ -138,11 +138,11 @@ function convertKeysToCamelCase(obj) {
 
 
 module.exports = {
-  filterApiResults,
-  createToken,
+  convertKeysToCamelCase,
   sqlForPartialUpdate,
   normalizeFormData,
+  filterApiResults,
+  createToken,
   capitalize,
-  convertKeysToCamelCase,
   toCamelCase
 };
