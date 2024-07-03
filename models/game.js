@@ -27,7 +27,7 @@ class Game {
              note
       FROM games
       WHERE username = $1
-      ORDER BY date_added;`, [username]
+      ORDER BY date_added DESC;`, [username]
     );
 
     const games = gamesRes.rows;
@@ -49,13 +49,13 @@ class Game {
 
     const result = await db.query(`
       INSERT INTO games (username,
-                          title,
-                          description,
-                          image_url,
-                          release_date,
-                          preferred_system,
-                          note,
-                          date_added)
+                         title,
+                         description,
+                         image_url,
+                         release_date,
+                         preferred_system,
+                         note,
+                         date_added)
       VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP)
       RETURNING id,
                 username,
@@ -84,11 +84,7 @@ class Game {
       UPDATE games
       SET preferred_system = $1, note = $2
       WHERE id = $3
-      RETURNING id,
-                title,
-                release_date,
-                preferred_system,
-                note;`,
+      RETURNING id, title, release_date, preferred_system, note;`,
       [data.preferredSystem, data.note, data.id]
     );
 

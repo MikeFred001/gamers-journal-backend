@@ -4,7 +4,6 @@ const axios = require('axios');
 
 const { filterApiResults } = require('../utils.js');
 
-// Assume GAMES_API and filterApiResults are defined elsewhere
 const API_KEY = process.env.GB_API_KEY;
 const API_ROUTE = `https://www.giantbomb.com/api/games/?api_key=${API_KEY}&f` +
                   `ormat=json&resources=game&field_list=platforms,image,name` +

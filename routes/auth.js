@@ -1,12 +1,9 @@
 "use strict";
 
-/** Routes for authentication. */
-
-
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const { createToken, normalizeFormData } = require("../utils");
+const { createToken, normalizeUserData } = require("../utils");
 const { BadRequestError } = require("../expressError");
 
 const jsonschema = require("jsonschema");
@@ -16,13 +13,11 @@ const userRegisterSchema = require("../schemas/userRegister.json");
 
 //--ROUTERS-------------------------------------------------------------------//
 
-/** POST /auth/login:  { username, password } => { token }
+/* POST /auth/login:  { username, password } => { token }
  *
  * Returns JWT token which can be used to authenticate further requests.
  *
- * Authorization required: none
- */
-
+ * Authorization required: none */
 router.post("/login", async function (req, res, next) {
     const validator = jsonschema.validate(
         req.body,
@@ -63,7 +58,7 @@ router.post("/register", async function (req, res, next) {
         throw new BadRequestError(errs);
     }
 
-    const normalizedData = normalizeFormData(req.body);
+    const normalizedData = normalizeUserData(req.body);
     const newUser = await User.register({ ...normalizedData, isAdmin: false });
     const token = createToken(newUser);
 

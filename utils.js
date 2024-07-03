@@ -5,14 +5,14 @@ const { PLACEHOLDER_IMAGE } = require("./constants.js");
  * Also adds a unique id to each result.
  *
  * input: [
- *  { deck,
+ *  { deck (brief description),
  *    image: { icon_url, ... },
  *    platforms: [ { name, ... }, ... ],
  *    release_date,
  *    name }
  * ]
  *
- * output: [ { id, description, image, name, platforms, releaseDate }, ... ]
+ * output: [ { id, description, imageUrl, name, platforms[], releaseDate }, ... ]
  */
 function filterApiResults(results) {
   const filteredResults = [];
@@ -77,13 +77,10 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 }
 
 
-//--NORMALIZE FORM DATA-------------------------------------------------------//
+//--NORMALIZE USER DATA-------------------------------------------------------//
 
-// TODO: This function is currently used for user registration only, may need to
-// update it to handle multiple forms. If not, make function name more specific.
-
-// Normalizes form data, trimming whitespace and handling capitalization.
-function normalizeFormData(data) {
+// Normalizes form data, trims whitespace and capitalizes first and last names.
+function normalizeUserData(data) {
   const username  = data.username.trim().toLowerCase();
   const password  = data.password.trim();
   const firstName = capitalize(data.firstName);
@@ -140,7 +137,7 @@ function convertKeysToCamelCase(obj) {
 module.exports = {
   convertKeysToCamelCase,
   sqlForPartialUpdate,
-  normalizeFormData,
+  normalizeUserData,
   filterApiResults,
   createToken,
   capitalize,
